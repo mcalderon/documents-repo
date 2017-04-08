@@ -7,4 +7,4 @@ COPY /target/documents.war /usr/local/tomcat/webapps/documents.war
 
 RUN mkdir /doc-repository
 
-EXPOSE 8086
+EXPOSE 8080
