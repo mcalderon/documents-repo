@@ -1,5 +1,7 @@
 package com.firstfactory.api.service;
 
+import com.firstfactory.api.entity.DocumentList;
+
 import java.io.InputStream;
 
 public interface DocumentServices {
@@ -8,7 +10,7 @@ public interface DocumentServices {
 
     void deleteDocument(String fileName);
 
-    String listAllDocuments();
+    DocumentList listAllDocuments();
 
     void getDocument();
 }

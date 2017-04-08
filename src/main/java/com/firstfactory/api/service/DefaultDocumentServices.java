@@ -1,5 +1,7 @@
 package com.firstfactory.api.service;
 
+import com.firstfactory.api.entity.Document;
+import com.firstfactory.api.entity.DocumentList;
 import com.firstfactory.api.exception.DocumentHandlerException;
 import com.firstfactory.api.storage.DocumentStorage;
 import lombok.NoArgsConstructor;
@@ -11,8 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -24,11 +24,7 @@ public class DefaultDocumentServices implements DocumentServices {
     @Override
     public void createDocument(InputStream file, String fileName, String type, String notes) {
         try {
-            Map<String, Object> record = new HashMap<>();
-            record.put("name", fileName);
-            record.put("type", type);
-            record.put("note", notes);
-            new DocumentStorage().insertRecord(DOCUMENT_TABLE, record);
+            new DocumentStorage().insertRecord(DOCUMENT_TABLE, Document.castToMap(new Document(fileName, type, notes)));
             this.storeFile(file, fileName);
         } catch (IOException e) {
             throw new DocumentHandlerException(e.getMessage(), e);
@@ -45,9 +41,12 @@ public class DefaultDocumentServices implements DocumentServices {
     }
 
     @Override
-    public String listAllDocuments() {
+    public DocumentList listAllDocuments() {
         try {
-            return this.listAllFiles();
+            this.listAllFiles();
+            return new DocumentList(new DocumentStorage().readAll(DOCUMENT_TABLE)
+                    .stream().map(Document::castFromMap).collect(Collectors.toList())
+            );
         } catch (IOException e) {
             throw new DocumentHandlerException(e.getMessage(), e);
         }

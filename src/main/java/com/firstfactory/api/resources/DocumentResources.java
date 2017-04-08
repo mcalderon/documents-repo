@@ -31,7 +31,7 @@ public class DocumentResources {
         try {
             return Response.ok().entity(this.documentServices.listAllDocuments()).build();
         } catch (DocumentHandlerException e) {
-            return Response.serverError().entity("error: Failed to upload file").build();
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
