@@ -1,6 +1,6 @@
 package com.firstfactory.api.exception;
 
-public class DocumentHandlerException extends Exception {
+public class DocumentHandlerException extends RuntimeException {
 
     public DocumentHandlerException(String message, Throwable throwable) {
         super(message, throwable);

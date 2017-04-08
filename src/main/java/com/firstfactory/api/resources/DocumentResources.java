@@ -14,6 +14,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
@@ -52,15 +54,16 @@ public class DocumentResources {
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadDocument(@FormDataParam("file") InputStream file,
+    public void uploadDocument(@Suspended final AsyncResponse response,
+                               @FormDataParam("file") InputStream file,
                                @FormDataParam("file") FormDataContentDisposition fileDetail,
                                @FormDataParam("type") FormDataBodyPart type,
                                @FormDataParam("notes") FormDataBodyPart notes) {
         try {
             this.documentServices.createDocument(file, fileDetail.getFileName(), type.getValue(), notes.getValue());
-            return Response.accepted().build();
+            response.resume(Response.accepted().build());
         } catch (DocumentHandlerException e) {
-            return Response.serverError().entity("error: Failed to upload file").build();
+            response.resume(Response.serverError().entity(e.getMessage()).build());
         }
     }
 }
