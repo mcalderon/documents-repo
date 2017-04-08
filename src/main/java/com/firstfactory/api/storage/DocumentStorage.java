@@ -23,7 +23,8 @@ public class DocumentStorage {
     private ConfigProperties properties;
     private static final String INSERT_QUERY = "INSERT INTO %s (%s) VALUES (%s)";
     private static final String SELECT_ALL = "SELECT * FROM %s";
-    private static final String SELECT_BY_ID = "SELECT * FROM %s where id = %d";
+    private static final String SELECT_BY_ID = "SELECT * FROM %s WHERE id = %d";
+    private static final String DELETE_BY_ID = "DELETE FROM %s WHERE id = %d";
 
     public DocumentStorage() {
         properties = new DefaultConfigProperties();
@@ -53,6 +54,20 @@ public class DocumentStorage {
         } catch (ClassNotFoundException | SQLException e) {
             throw new DocumentHandlerException(e.getMessage(), e);
         }
+    }
+
+    public int deleteRecord(String table, int id) {
+        final int affectedRows;
+        final String query = String.format(DELETE_BY_ID, table, id);
+        try {
+            final Connection connection = this.connectToDB();
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                affectedRows = statement.executeUpdate();
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new DocumentHandlerException(e.getMessage(), e);
+        }
+        return affectedRows;
     }
 
     public Map<String, Object> findById(String table, int id) {

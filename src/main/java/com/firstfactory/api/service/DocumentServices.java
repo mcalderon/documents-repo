@@ -9,7 +9,7 @@ public interface DocumentServices {
 
     void createDocument(InputStream file, String fileName, String type, String notes);
 
-    void deleteDocument(String fileName);
+    void deleteDocument(int id);
 
     DocumentList listAllDocuments();
 

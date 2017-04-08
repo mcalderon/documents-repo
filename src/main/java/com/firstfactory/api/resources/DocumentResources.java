@@ -37,19 +37,19 @@ public class DocumentResources {
 
     @GET
     @Path("/{id}")
-    public Response getOneDocument(@PathParam("id") int fileId) {
+    public Response getOneDocument(@PathParam("id") int documentId) {
         try {
-            return Response.ok().entity(this.documentServices.getDocument(fileId)).build();
+            return Response.ok().entity(this.documentServices.getDocument(documentId)).build();
         } catch (DocumentHandlerException e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
     @DELETE
-    @Path("/{name}")
-    public Response deleteDocument(@PathParam("name") String fileName) {
+    @Path("/{id}")
+    public Response deleteDocument(@PathParam("id") int documentId) {
         try {
-            this.documentServices.deleteDocument(fileName);
+            this.documentServices.deleteDocument(documentId);
             return Response.noContent().build();
         } catch (DocumentHandlerException e) {
             return Response.serverError().entity("error: Failed to upload file").build();

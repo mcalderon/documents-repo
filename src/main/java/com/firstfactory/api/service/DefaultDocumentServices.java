@@ -32,9 +32,12 @@ public class DefaultDocumentServices implements DocumentServices {
     }
 
     @Override
-    public void deleteDocument(String fileName) {
+    public void deleteDocument(int id) {
         try {
-            this.deleteFile(fileName);
+            final Document documentToDelete = this.getDocument(id);
+            if (new DocumentStorage().deleteRecord(DOCUMENT_TABLE, id) != 0) {
+                this.deleteFile(documentToDelete.getName());
+            }
         } catch (IOException e) {
             throw new DocumentHandlerException(e.getMessage(), e);
         }
