@@ -19,4 +19,7 @@
         <servlet-name>First Factory API</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+    <listener>
+        <listener-class>com.firstfactory.api.ServletContextClass</listener-class>
+    </listener>
 </web-app>

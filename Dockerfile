@@ -6,3 +6,5 @@ ENV JPDA_TRANSPORT="dt_socket"
 COPY /target/documents.war /usr/local/tomcat/webapps/documents.war
 
 RUN mkdir /doc-repository
+
+EXPOSE 8086
