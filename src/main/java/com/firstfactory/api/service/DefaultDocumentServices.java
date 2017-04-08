@@ -42,19 +42,14 @@ public class DefaultDocumentServices implements DocumentServices {
 
     @Override
     public DocumentList listAllDocuments() {
-        try {
-            this.listAllFiles();
-            return new DocumentList(new DocumentStorage().readAll(DOCUMENT_TABLE)
-                    .stream().map(Document::castFromMap).collect(Collectors.toList())
-            );
-        } catch (IOException e) {
-            throw new DocumentHandlerException(e.getMessage(), e);
-        }
+        return new DocumentList(new DocumentStorage().findAll(DOCUMENT_TABLE)
+                .stream().map(Document::castFromMap).collect(Collectors.toList())
+        );
     }
 
     @Override
-    public void getDocument() {
-        throw new UnsupportedOperationException();
+    public Document getDocument(int id) {
+        return Document.castFromMap(new DocumentStorage().findById(DOCUMENT_TABLE, id));
     }
 
     private void storeFile(InputStream file, String fileName) throws IOException {
@@ -65,11 +60,6 @@ public class DefaultDocumentServices implements DocumentServices {
                 stream.write(bytes, 0, read);
             }
         }
-    }
-
-    private String listAllFiles() throws IOException {
-        return Files.list(Paths.get(DEFAULT_DIR)).filter(Files::isRegularFile)
-                .map(f -> f.toFile().getName()).collect(Collectors.joining(", "));
     }
 
     private void deleteFile(String fileName) throws IOException {

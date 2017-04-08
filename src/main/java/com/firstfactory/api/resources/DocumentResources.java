@@ -36,9 +36,13 @@ public class DocumentResources {
     }
 
     @GET
-    @Path("/{name}")
-    public Response getOneDocument(@PathParam("name") String fileName) {
-        throw new UnsupportedOperationException();
+    @Path("/{id}")
+    public Response getOneDocument(@PathParam("id") int fileId) {
+        try {
+            return Response.ok().entity(this.documentServices.getDocument(fileId)).build();
+        } catch (DocumentHandlerException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     @DELETE

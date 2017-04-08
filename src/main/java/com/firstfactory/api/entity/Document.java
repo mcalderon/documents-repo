@@ -23,10 +23,12 @@ public class Document {
 
     public static Document castFromMap(Map<String, Object> origin) {
         Document document = new Document();
-        document.setId(Integer.parseInt(origin.get("id").toString()));
-        document.setName(origin.get("name").toString());
-        document.setType(origin.get("type").toString());
-        document.setNotes(origin.get("note").toString());
+        if(!origin.isEmpty()) {
+            document.setId(Integer.parseInt(origin.get("id").toString()));
+            document.setName(origin.get("name").toString());
+            document.setType(origin.get("type").toString());
+            document.setNotes(origin.get("note").toString());
+        }
         return document;
     }
 

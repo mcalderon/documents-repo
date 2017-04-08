@@ -1,5 +1,6 @@
 package com.firstfactory.api.service;
 
+import com.firstfactory.api.entity.Document;
 import com.firstfactory.api.entity.DocumentList;
 
 import java.io.InputStream;
@@ -12,5 +13,5 @@ public interface DocumentServices {
 
     DocumentList listAllDocuments();
 
-    void getDocument();
+    Document getDocument(int id);
 }

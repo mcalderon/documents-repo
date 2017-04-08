@@ -23,6 +23,7 @@ public class DocumentStorage {
     private ConfigProperties properties;
     private static final String INSERT_QUERY = "INSERT INTO %s (%s) VALUES (%s)";
     private static final String SELECT_ALL = "SELECT * FROM %s";
+    private static final String SELECT_BY_ID = "SELECT * FROM %s where id = %d";
 
     public DocumentStorage() {
         properties = new DefaultConfigProperties();
@@ -39,14 +40,14 @@ public class DocumentStorage {
     }
 
     public int insertRecord(String table, Map<String, Object> record) {
-        try{
+        try {
             final Connection connection = this.connectToDB();
             final String columns = record.keySet().stream().collect(Collectors.joining(","));
             final StringBuilder values = new StringBuilder();
-            record.values().forEach(v -> values.append( (v instanceof String) ? "'" + v + "'," : v + ","));
+            record.values().forEach(v -> values.append((v instanceof String) ? "'" + v + "'," : v + ","));
             values.setLength(values.length() - 1);
             final String query = String.format(INSERT_QUERY, table, columns, values.toString());
-            try(Statement statement = connection.createStatement()){
+            try (Statement statement = connection.createStatement()) {
                 return statement.executeUpdate(query);
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -54,31 +55,51 @@ public class DocumentStorage {
         }
     }
 
-    public List<Map<String, Object>> readAll(String table) {
+    public Map<String, Object> findById(String table, int id) {
+        final Map<String, Object> record = new HashMap<>();
+        final String query = String.format(SELECT_BY_ID, table, id);
+        try {
+            final Connection connection = this.connectToDB();
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                final ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    this.extractSingleRecordRow(resultSet).forEach(record::put);
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new DocumentHandlerException(e.getMessage(), e);
+        }
+        return record;
+    }
+
+    public List<Map<String, Object>> findAll(String table) {
         try {
             final List<Map<String, Object>> results = new ArrayList<>();
             final Connection connection = this.connectToDB();
             final String query = String.format(SELECT_ALL, table);
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 final ResultSet resultSet = statement.executeQuery();
-                final ResultSetMetaData info = resultSet.getMetaData();
-                final int columnCount = info.getColumnCount();
-
                 while (resultSet.next()) {
-                    Map<String, Object> currentRecord = new HashMap<>();
-                    IntStream.rangeClosed(1, columnCount).forEach(i -> {
-                        try {
-                            currentRecord.put(info.getColumnName(i), resultSet.getObject(i));
-                        } catch (SQLException e) {
-                            throw new DocumentHandlerException(e.getMessage(), e);
-                        }
-                    });
-                    results.add(currentRecord);
+                    results.add(this.extractSingleRecordRow(resultSet));
                 }
             }
             return results;
         } catch (ClassNotFoundException | SQLException e) {
             throw new DocumentHandlerException(e.getMessage(), e);
         }
+    }
+
+    private Map<String, Object> extractSingleRecordRow(ResultSet resultSet) throws SQLException {
+        final ResultSetMetaData info = resultSet.getMetaData();
+        final int columnCount = info.getColumnCount();
+        Map<String, Object> record = new HashMap<>();
+        IntStream.rangeClosed(1, columnCount).forEach(i -> {
+            try {
+                record.put(info.getColumnName(i), resultSet.getObject(i));
+            } catch (SQLException e) {
+                throw new DocumentHandlerException(e.getMessage(), e);
+            }
+        });
+        return record;
     }
 }
