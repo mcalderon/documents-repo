@@ -3,6 +3,7 @@ package com.firstfactory.api.service;
 import com.firstfactory.api.entity.Document;
 import com.firstfactory.api.entity.DocumentList;
 
+import javax.ws.rs.core.StreamingOutput;
 import java.io.InputStream;
 
 public interface DocumentServices {
@@ -14,4 +15,6 @@ public interface DocumentServices {
     DocumentList listAllDocuments();
 
     Document getDocument(int id);
+
+    StreamingOutput downloadDocument(String fileName);
 }

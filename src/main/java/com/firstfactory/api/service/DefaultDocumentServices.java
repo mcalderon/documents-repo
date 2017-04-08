@@ -6,12 +6,14 @@ import com.firstfactory.api.exception.DocumentHandlerException;
 import com.firstfactory.api.storage.DocumentStorage;
 import lombok.NoArgsConstructor;
 
+import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,23 @@ public class DefaultDocumentServices implements DocumentServices {
     @Override
     public Document getDocument(int id) {
         return Document.castFromMap(new DocumentStorage().findById(DOCUMENT_TABLE, id));
+    }
+
+    @Override
+    public StreamingOutput downloadDocument(String fileName) {
+        if(!Paths.get(DefaultDocumentServices.fullPath(fileName)).toFile().exists()) {
+            throw new DocumentHandlerException("File does not exist in the repository");
+        }
+        return outputStream -> {
+            try {
+                Path path = Paths.get(fullPath(fileName));
+                byte[] data = Files.readAllBytes(path);
+                outputStream.write(data);
+                outputStream.flush();
+            } catch (IOException e) {
+                throw new DocumentHandlerException(e.getMessage(), e);
+            }
+        };
     }
 
     private void storeFile(InputStream file, String fileName) throws IOException {

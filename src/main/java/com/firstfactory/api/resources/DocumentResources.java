@@ -45,6 +45,19 @@ public class DocumentResources {
         }
     }
 
+    @GET
+    @Path("/download/{id}")
+    public void downloadDocument(@Suspended final AsyncResponse response,
+                                 @PathParam("id") int documentId) {
+        final String fileName = this.documentServices.getDocument(documentId).getName();
+        response.resume(
+                Response.ok(
+                        this.documentServices.downloadDocument(fileName),
+                        MediaType.APPLICATION_OCTET_STREAM
+                ).header("content-disposition", "attachment; filename = \"" + fileName + "\"").build()
+        );
+    }
+
     @DELETE
     @Path("/{id}")
     public Response deleteDocument(@PathParam("id") int documentId) {
