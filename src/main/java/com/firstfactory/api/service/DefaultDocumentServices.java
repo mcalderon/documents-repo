@@ -26,6 +26,7 @@ public class DefaultDocumentServices implements DocumentServices {
     @Override
     public void createDocument(InputStream file, String fileName, String type, String notes) {
         try {
+            //TODO it seems odd to create an object to execute a method, shouldn't DocumentStorage be an interface?
             new DocumentStorage().insertRecord(DOCUMENT_TABLE, Document.castToMap(new Document(fileName, type, notes)));
             this.storeFile(file, fileName);
         } catch (IOException e) {
@@ -37,6 +38,7 @@ public class DefaultDocumentServices implements DocumentServices {
     public void deleteDocument(int id) {
         try {
             final Document documentToDelete = this.getDocument(id);
+            //TODO same
             if (new DocumentStorage().deleteRecord(DOCUMENT_TABLE, id) != 0) {
                 this.deleteFile(documentToDelete.getName());
             }
@@ -47,6 +49,7 @@ public class DefaultDocumentServices implements DocumentServices {
 
     @Override
     public DocumentList listAllDocuments() {
+        //TODO same
         return new DocumentList(new DocumentStorage().findAll(DOCUMENT_TABLE)
                 .stream().map(Document::castFromMap).collect(Collectors.toList())
         );
@@ -54,14 +57,17 @@ public class DefaultDocumentServices implements DocumentServices {
 
     @Override
     public Document getDocument(int id) {
+        //TODO same
         return Document.castFromMap(new DocumentStorage().findById(DOCUMENT_TABLE, id));
     }
 
     @Override
     public StreamingOutput downloadDocument(String fileName) {
+        //TODO spacing
         if(!Paths.get(DefaultDocumentServices.fullPath(fileName)).toFile().exists()) {
             throw new DocumentHandlerException("File does not exist in the repository");
         }
+        //TODO abstract this into a different method this could be used in other place
         return outputStream -> {
             try {
                 Path path = Paths.get(fullPath(fileName));

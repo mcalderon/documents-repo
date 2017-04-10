@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+//TODO this should implement a interface
 public class DocumentStorage {
 
     private ConfigProperties properties;
+    //TODO this should be move to a different file, it has the potential of grow a lot
     private static final String INSERT_QUERY = "INSERT INTO %s (%s) VALUES (%s)";
     private static final String SELECT_ALL = "SELECT * FROM %s";
     private static final String SELECT_BY_ID = "SELECT * FROM %s WHERE id = %d";
