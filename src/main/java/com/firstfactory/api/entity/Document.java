@@ -23,6 +23,7 @@ public class Document {
 
     public static Document castFromMap(Map<String, Object> origin) {
         Document document = new Document();
+        //TODO spacing
         if(!origin.isEmpty()) {
             document.setId(Integer.parseInt(origin.get("id").toString()));
             document.setName(origin.get("name").toString());

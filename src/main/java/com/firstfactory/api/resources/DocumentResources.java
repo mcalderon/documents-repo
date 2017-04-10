@@ -45,6 +45,7 @@ public class DocumentResources {
         }
     }
 
+    //TODO return response, 2 methods that return separately the name and the input stream, use command + L there are some spacing issues
     @GET
     @Path("/download/{id}")
     public void downloadDocument(@Suspended final AsyncResponse response,
@@ -69,6 +70,7 @@ public class DocumentResources {
         }
     }
 
+    //TODO return response
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public void uploadDocument(@Suspended final AsyncResponse response,
