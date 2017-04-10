@@ -116,7 +116,7 @@ modules.xml
 
 # Package Files #
 *.jar
-*.war
+#*.war
 *.ear
 *.zip
 *.tar.gz
@@ -169,3 +169,8 @@ buildNumber.properties
 
 # End of https://www.gitignore.io/api/java,macos,maven,intellij,code-java,intellij+iml
 .idea
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
