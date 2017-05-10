@@ -42,7 +42,7 @@ public class DefaultDocumentServices implements DocumentServices {
         try {
             final Document documentToDelete = this.getDocument(id);
             if (this.documentStorage.deleteRecord(DOCUMENT_TABLE, id) != 0) {
-                this.deleteFile(documentToDelete.getName());
+                this.deleteFile(documentToDelete.getFileText());
             }
         } catch (IOException e) {
             throw new DocumentHandlerException(e.getMessage(), e);

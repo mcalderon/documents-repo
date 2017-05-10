@@ -49,7 +49,7 @@ public class DocumentResources {
     @Path("/download/{id}")
     public void downloadDocument(@Suspended final AsyncResponse response,
                                  @PathParam("id") int documentId) {
-        final String fileName = this.documentServices.getDocument(documentId).getName();
+        final String fileName = this.documentServices.getDocument(documentId).getFileText();
         response.resume(
                 Response.ok(
                         this.documentServices.downloadDocument(fileName),
