@@ -1,0 +1,16 @@
+version: '2.0'
+services:
+  api:
+    build: .
+    ports:
+      - '8086:8080'
+      - '8000:8000'
+    environment:
+      - MVNI=clean install package -U
+      - JPDA_ADDRESS=8000
+      - JPDA_TRANSPORT=dt_socket
+    volumes:
+      - ./target/documents:/usr/local/tomcat/webapps/documents
+      - $HOME/.m2/repository/:/root/.m2/repository
+    restart: always
+    command: catalina.sh jpda run
